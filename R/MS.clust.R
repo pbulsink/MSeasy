@@ -1,8 +1,11 @@
 MS.clust <-
-function(data_tot, quant=FALSE, clV, ncmin, ncmax, Nbc, varRT = 0.1, disMeth, linkMeth, clustMeth)
+function(data_tot, quant=FALSE, clV, ncmin, ncmax, Nbc, varRT = 0.1, disMeth="euclidean", linkMeth="ward", clustMeth="hierarchical")
 {
 #Rprof()
-
+if(missing(data_tot)){
+data_tot<-tk_choose.files(default=file.path(getwd(),"*.txt"),caption="Please, select a file for MS.clust (initial_DATA.txt)", multi=FALSE, filters=matrix(c("your file","*.txt"),ncol=2))
+data_tot<-read.table(data_tot, header=TRUE, check.names=FALSE)
+}	
 ### MSeasy v 1.3 March 2011 with improved errorhandling
 st<-strsplit(date(), " ")[[1]]
 stBis<-strsplit(st[4], ":")[[1]]
@@ -137,7 +140,7 @@ if (clV==FALSE) #check for error on Nbc or ncmax value
 data_tot_temp<-cbind(cl, data_tot)
 Sil.fin<-silhouette(cl, dist=Dis)
 data_tot_temp_new<-cbind(data_tot_temp[1:3],Sil.fin[,3],Sil.fin[,2], data_tot_temp[4:ncol(data_tot_temp)])
-colnames(data_tot_temp_new)<-c("cluster", "analyses","RT", "Silhouette_indiv","neighbor_cluster", colnames(data_tot_temp)[4:ncol(data_tot_temp)])
+colnames(data_tot_temp_new)<-c("cluster", "analyses","RT", "Silhouette_indiv","neighbor_cluster", as.numeric(colnames(data_tot_temp)[4:ncol(data_tot_temp)]))
 
 resPclus<-vector()
 
@@ -198,6 +201,8 @@ l<-1
         clus_ok[l]<-rownames(res)[k]
         l<-l+1
         }
+print(paste("cluster ok length=",length(clus_ok),sep=" "))
+if (length(clus_ok)==0) stop(cat("No cluster OK found, please increase Nbc value or varRT \n"), call.=FALSE)
 
 m<-match(clus_ok,clusters)
 mn<-1:length(clusters)
@@ -208,6 +213,7 @@ dat<-subset(data_tot_temp, data_tot_temp[,1]==clus_ok[1])
         for (iii in 2:length(clus_ok))
         {
         dat<-rbind(dat, subset(data_tot_temp, data_tot_temp[,1]==clus_ok[iii]))
+		
         }
         
 colnames(dat)[1]<-"num_cluster"
@@ -246,7 +252,7 @@ colnames(mat_dat2)<-mol
                     if (vect[j]==TRUE)
                     mat_dat[i,j]<-0
                     else ( if (length(tempo[which(tempo$num_cluster==mol[j]),4])>1)
-	   mat_dat[i,j]<-NA
+				mat_dat[i,j]<-NA
 			   else(mat_dat[i,j]<-tempo[which(tempo$num_cluster==mol[j]),4])
 			  )
                     
@@ -254,7 +260,7 @@ colnames(mat_dat2)<-mol
                     if (vect[j]==TRUE)
                     mat_dat2[i,j]<-0
                     else ( if (length(tempo[which(tempo$num_cluster==mol[j]),5])>1)
-	   mat_dat2[i,j]<-NA
+				mat_dat2[i,j]<-NA
 			   else(mat_dat2[i,j]<-tempo[which(tempo$num_cluster==mol[j]),5])
 			  )    
                 }
@@ -265,7 +271,7 @@ colnames(mat_dat2)<-mol
 ## construct a pdf with the histograms of retention times for each inhomogeneous cluster
 if (length(clus_pb)>1)
 {
-pdf(paste(Mypath, "/", "Hist_cluster_problem_RT", answer[NC], ".pdf", sep=""))
+pdf(file.path(Mypath,paste("Hist_cluster_problem_RT", answer[NC], ".pdf", sep="")))
 for (i in 1:length(clus_pb))
 {
 hist(as.numeric(as.vector(data_tot_temp_new$RT[data_tot_temp$cl==clus_pb[i]])), xlab="retention time", ylab="number of analyses", main=paste("Distribution of retention times for the cluster", clus_pb[i], sep=" "))
@@ -277,7 +283,7 @@ dev.off()
 ## construct a pdf with the histograms of silhouette widths for each inhomogeneous cluster
 if (length(clus_pb)>1)
 {
-pdf(paste(Mypath, "/", "Hist_cluster_problem_silhouette", answer[NC], ".pdf", sep=""))
+pdf(file.path(Mypath,paste("Hist_cluster_problem_silhouette", answer[NC], ".pdf", sep="")))
 for (i in 1:length(clus_pb))
 {
 hist(as.numeric(as.vector(data_tot_temp_new$Silhouette_indiv[data_tot_temp$cl==clus_pb[i]])), xlab="silhouette width", ylab="number of analyses", main=paste("Distribution of silhouette widths for the cluster", clus_pb[i], sep=" "))
@@ -289,7 +295,7 @@ dev.off()
 ## construct a pdf with the histograms of retention times for each homogeneous cluster
 if (length(clus_ok)>1)
 {
-pdf(paste(Mypath, "/", "Hist_cluster_ok_RT", answer[NC], ".pdf", sep=""))
+pdf(file.path(Mypath,paste("Hist_cluster_ok_RT", answer[NC], ".pdf", sep="")))
 for (i in 1:length(clus_ok))
 {
 hist(as.numeric(as.vector(data_tot_temp_new$RT[data_tot_temp$cl==clus_ok[i]])), xlab="retention time", ylab="number of analyses", main=paste("Distribution of retention time for the cluster", clus_ok[i], sep=" "))
@@ -302,7 +308,7 @@ dev.off()
 
 if (length(clus_ok)>1)
 {
-pdf(paste(Mypath, "/", "Hist_cluster_ok_silhouette", answer[NC], ".pdf", sep=""))
+pdf(file.path(Mypath,paste("Hist_cluster_ok_silhouette", answer[NC], ".pdf", sep="")))
 for (i in 1:length(clus_ok))
 {
 hist(as.numeric(as.vector(data_tot_temp_new$Silhouette_indiv[data_tot_temp$cl==clus_ok[i]])), xlab="silhouette width", ylab="number of analyses", main=paste("Distribution of silhouette widths for the cluster", clus_ok[i], sep=" "))
@@ -343,24 +349,24 @@ assign("ms8_bug",ms_8,envir=parent.frame())
 
 data_final_all<-cbind(data_tot_temp_new[,1:7], ms_8, data_tot_temp_new[8:ncol(data_tot_temp_new)])
 
-write.table(res, file=paste(Mypath, "/", "output_cluster", answer[NC], ".txt", sep=""), row.names=FALSE)
-write.table(data_final_all, file=paste(Mypath, "/", "output_peak", answer[NC], ".txt", sep=""), row.names=FALSE)
+write.table(res, file=file.path(Mypath,paste("output_cluster", answer[NC], ".txt", sep="")), row.names=FALSE)
+write.table(data_final_all, file=file.path(Mypath,paste("output_peak", answer[NC], ".txt", sep="")), row.names=FALSE)
 
 if (quant ==FALSE)
 {
 mat_dat<-cbind(rownames(mat_dat), mat_dat)
 colnames(mat_dat)[1]<-"analysis"
-write.table(mat_dat, file=paste(Mypath, "/", "output_fingerprintingmatrix", answer[NC], ".txt", sep=""), row.names=FALSE)
+write.table(mat_dat, file=file.path(Mypath,paste("output_fingerprintingmatrix", answer[NC], ".txt", sep="")), row.names=FALSE)
 }
 if (quant ==TRUE)
 {
 mat_dat<-cbind(rownames(mat_dat), mat_dat)
 colnames(mat_dat)[1]<-"analysis"
-write.table(mat_dat, file=paste(Mypath, "/", "output_profilingmatrix_corrArea", answer[NC], ".txt", sep=""), row.names=FALSE)
+write.table(mat_dat, file=file.path(Mypath,paste("output_profilingmatrix_quantification1", answer[NC], ".txt", sep="")), row.names=FALSE)
 
 mat_dat2<-cbind(rownames(mat_dat2), mat_dat2)
 colnames(mat_dat2)[1]<-"analysis"
-write.table(mat_dat2, file=paste(Mypath, "/", "output_profilingmatrix_perctotal", answer[NC], ".txt", sep=""), row.names=FALSE)
+write.table(mat_dat2, file=file.path(Mypath,paste("output_profilingmatrix_quantification2", answer[NC], ".txt", sep="")), row.names=FALSE)
 
 }
 

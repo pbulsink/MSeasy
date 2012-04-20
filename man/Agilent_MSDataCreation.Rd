@@ -4,7 +4,7 @@
 
 \docType{data}
 \title{
-Demonstration folder for MS.DataCreation 
+Demonstration folder for MS.DataCreation with option DataType=Agilent
 }
 
 \description{
@@ -13,7 +13,7 @@ This demonstration folder includes 2 GC-MS analyses of Lavandula obtained from A
 
 \usage{Agilent_MSDataCreation}
 
-\format{ A folder with two different sub-folders, each corresponding to one GC-MS analysis. Each sub-folder contains an export3ddata and a rteres files. 
+\format{ A folder with two different sub-folders, each corresponding to one GC-MS analysis. Each sub-folder contains an netCDF file (mass spectra) and a rteres file (chromatogram). 
  }
 
 \examples{

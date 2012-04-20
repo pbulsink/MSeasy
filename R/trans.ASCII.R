@@ -1,7 +1,18 @@
 trans.ASCII <-
 function (path, mz) 
 {
-    #Rprof()
+flagmz=FALSE   
+  
+	if(missing(mz)||mz==""){
+		cat("WARNING, Stop! mz values needed \n")
+		flagmz=TRUE
+	}
+	if(flagmz==FALSE){
+	#Rprof()
+	 if(missing(path)||path==""){
+		require("tcltk")
+		path=tclvalue(tkchooseDirectory(title="Please, select your directory containing raw ASCII files"))
+	}
     st <- strsplit(date(), " ")[[1]]
     stBis <- strsplit(st[4], ":")[[1]]
     Hour <- paste(stBis[1], stBis[2], stBis[3], sep = "-")
@@ -11,8 +22,10 @@ function (path, mz)
     L_analyses <- dir(path)
     print(L_analyses)
     for (N_analyses in 1:length(L_analyses)) {
-        an_tempo <- scan(paste(paste(path, "/", sep = ""), L_analyses[N_analyses], 
-            sep = ""), blank.lines.skip = FALSE)
+	#change file.path instead of paste(path..
+       # an_tempo <- scan(paste(paste(path, "/", sep = ""), L_analyses[N_analyses], 
+       #     sep = ""), blank.lines.skip = FALSE)
+			an_tempo <- scan(file.path(path, L_analyses[N_analyses]), blank.lines.skip = FALSE)
         chrom <- c(an_tempo[1], an_tempo[2])
         v <- vector()
         v[1] <- 4
@@ -72,12 +85,12 @@ function (path, mz)
         
         chrom <- chrom[4:(dim(chrom)[1]-1), ]
         an <- cbind(chrom, as.data.frame(an))
-        write.table(an, file = paste(PathDate, "/", L_analyses[N_analyses], 
-            sep = ""), row.names = FALSE)
+		#change here file.path instead of paste(...
+        write.table(an, file = file.path(PathDate, L_analyses[N_analyses]), row.names = FALSE)
     }
     #Rprof(NULL)
     #summaryRprof(filename = "Rprof.out")$sampling.time
 	print(paste("Your working directory is :", eval(getwd())))
 	print(paste("Transformed data files are in the folder:", PathDate, cat("\n")))
 }
-
+}

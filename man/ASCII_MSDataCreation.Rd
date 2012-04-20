@@ -4,7 +4,7 @@
 
 \docType{data}
 \title{
-Demonstration folder for MS.DataCreation 
+Demonstration folder for MS.DataCreation with option DataType=ASCII
 }
 
 \description{

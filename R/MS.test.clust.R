@@ -1,16 +1,20 @@
 MS.test.clust <-
 function (data_tot, nclust) 
 {
+if(missing(data_tot)){
+data_tot<-tk_choose.files(default=file.path(getwd(),"*.txt"),caption="Please, select a file for MS.test.clust", multi=FALSE, filters=matrix(c("your file","*.txt"),ncol=2))
+data_tot<-read.table(data_tot, header=TRUE, check.names=FALSE)
+}
     library(fpc)
     Dunn.test <- matrix(nrow = 7, ncol = 5)
     rownames(Dunn.test) <- c("average", "single", "complete", 
         "ward", "centroid", "diana", "PAM")
     colnames(Dunn.test) <- c("cor", "mink_1/2", "mink_1/3", "manhattan", 
         "euclidean")
-    silhouette.test <- matrix(nrow = 7, ncol = 5)
-    rownames(silhouette.test) <- c("average", "single", "complete", 
+    silhouette.width <- matrix(nrow = 7, ncol = 5)
+    rownames(silhouette.width) <- c("average", "single", "complete", 
         "ward", "centroid", "diana", "PAM")
-    colnames(silhouette.test) <- c("cor", "mink_1/2", "mink_1/3", 
+    colnames(silhouette.width) <- c("cor", "mink_1/2", "mink_1/3", 
         "manhattan", "euclidean")
     for (i in c("average", "single", "complete", "ward", "centroid")) {
         Dis <- as.dist((1 - cor(t(data_tot[, 4:ncol(data_tot)]), 
@@ -20,7 +24,7 @@ function (data_tot, nclust)
         Test_valid <- cluster.stats(Dis, cl)
         Dunn.test[rownames(Dunn.test) == i, colnames(Dunn.test) == 
             "cor"] <- Test_valid$dunn
-        silhouette.test[rownames(silhouette.test) == i, colnames(silhouette.test) == 
+        silhouette.width[rownames(silhouette.width) == i, colnames(silhouette.width) == 
             "cor"] <- Test_valid$avg.silwidth
         Dis <- dist(data_tot[, 4:ncol(data_tot)], method = "minkowski", 
             p = 1/2)
@@ -29,7 +33,7 @@ function (data_tot, nclust)
         Test_valid <- cluster.stats(Dis, cl)
         Dunn.test[rownames(Dunn.test) == i, colnames(Dunn.test) == 
             "mink_1/2"] <- Test_valid$dunn
-        silhouette.test[rownames(silhouette.test) == i, colnames(silhouette.test) == 
+        silhouette.width[rownames(silhouette.width) == i, colnames(silhouette.width) == 
             "mink_1/2"] <- Test_valid$avg.silwidth
         Dis <- dist(data_tot[, 4:ncol(data_tot)], method = "minkowski", 
             p = 1/3)
@@ -38,7 +42,7 @@ function (data_tot, nclust)
         Test_valid <- cluster.stats(Dis, cl)
         Dunn.test[rownames(Dunn.test) == i, colnames(Dunn.test) == 
             "mink_1/3"] <- Test_valid$dunn
-        silhouette.test[rownames(silhouette.test) == i, colnames(silhouette.test) == 
+        silhouette.width[rownames(silhouette.width) == i, colnames(silhouette.width) == 
             "mink_1/3"] <- Test_valid$avg.silwidth
         Dis <- dist(data_tot[, 4:ncol(data_tot)], method = "minkowski", 
             p = 1)
@@ -47,7 +51,7 @@ function (data_tot, nclust)
         Test_valid <- cluster.stats(Dis, cl)
         Dunn.test[rownames(Dunn.test) == i, colnames(Dunn.test) == 
             "manhattan"] <- Test_valid$dunn
-        silhouette.test[rownames(silhouette.test) == i, colnames(silhouette.test) == 
+        silhouette.width[rownames(silhouette.width) == i, colnames(silhouette.width) == 
             "manhattan"] <- Test_valid$avg.silwidth
         Dis <- dist(data_tot[, 4:ncol(data_tot)], method = "minkowski", 
             p = 2)
@@ -56,7 +60,7 @@ function (data_tot, nclust)
         Test_valid <- cluster.stats(Dis, cl)
         Dunn.test[rownames(Dunn.test) == i, colnames(Dunn.test) == 
             "euclidean"] <- Test_valid$dunn
-        silhouette.test[rownames(silhouette.test) == i, colnames(silhouette.test) == 
+        silhouette.width[rownames(silhouette.width) == i, colnames(silhouette.width) == 
             "euclidean"] <- Test_valid$avg.silwidth
     }
     Dis <- as.dist((1 - cor(t(data_tot[, 4:ncol(data_tot)]), 
@@ -66,7 +70,7 @@ function (data_tot, nclust)
     Test_valid <- cluster.stats(Dis, cl)
     Dunn.test[rownames(Dunn.test) == "diana", colnames(Dunn.test) == 
         "cor"] <- Test_valid$dunn
-    silhouette.test[rownames(silhouette.test) == "diana", colnames(silhouette.test) == 
+    silhouette.width[rownames(silhouette.width) == "diana", colnames(silhouette.width) == 
         "cor"] <- Test_valid$avg.silwidth
     Dis <- dist(data_tot[, 4:ncol(data_tot)], method = "minkowski", 
         p = 1/2)
@@ -75,7 +79,7 @@ function (data_tot, nclust)
     Test_valid <- cluster.stats(Dis, cl)
     Dunn.test[rownames(Dunn.test) == "diana", colnames(Dunn.test) == 
         "mink_1/2"] <- Test_valid$dunn
-    silhouette.test[rownames(silhouette.test) == "diana", colnames(silhouette.test) == 
+    silhouette.width[rownames(silhouette.width) == "diana", colnames(silhouette.width) == 
         "mink_1/2"] <- Test_valid$avg.silwidth
     Dis <- dist(data_tot[, 4:ncol(data_tot)], method = "minkowski", 
         p = 1/3)
@@ -84,7 +88,7 @@ function (data_tot, nclust)
     Test_valid <- cluster.stats(Dis, cl)
     Dunn.test[rownames(Dunn.test) == "diana", colnames(Dunn.test) == 
         "mink_1/3"] <- Test_valid$dunn
-    silhouette.test[rownames(silhouette.test) == "diana", colnames(silhouette.test) == 
+    silhouette.width[rownames(silhouette.width) == "diana", colnames(silhouette.width) == 
         "mink_1/3"] <- Test_valid$avg.silwidth
     Dis <- dist(data_tot[, 4:ncol(data_tot)], method = "minkowski", 
         p = 1)
@@ -93,7 +97,7 @@ function (data_tot, nclust)
     Test_valid <- cluster.stats(Dis, cl)
     Dunn.test[rownames(Dunn.test) == "diana", colnames(Dunn.test) == 
         "manhattan"] <- Test_valid$dunn
-    silhouette.test[rownames(silhouette.test) == "diana", colnames(silhouette.test) == 
+    silhouette.width[rownames(silhouette.width) == "diana", colnames(silhouette.width) == 
         "manhattan"] <- Test_valid$avg.silwidth
     Dis <- dist(data_tot[, 4:ncol(data_tot)], method = "minkowski", 
         p = 2)
@@ -102,7 +106,7 @@ function (data_tot, nclust)
     Test_valid <- cluster.stats(Dis, cl)
     Dunn.test[rownames(Dunn.test) == "diana", colnames(Dunn.test) == 
         "euclidean"] <- Test_valid$dunn
-    silhouette.test[rownames(silhouette.test) == "diana", colnames(silhouette.test) == 
+    silhouette.width[rownames(silhouette.width) == "diana", colnames(silhouette.width) == 
         "euclidean"] <- Test_valid$avg.silwidth
     Dis <- as.dist((1 - cor(t(data_tot[, 4:ncol(data_tot)]), 
         method = "spearman")))
@@ -110,7 +114,7 @@ function (data_tot, nclust)
     Test_valid <- cluster.stats(Dis, Hc$pamobject$clustering)
     Dunn.test[rownames(Dunn.test) == "PAM", colnames(Dunn.test) == 
         "cor"] <- Test_valid$dunn
-    silhouette.test[rownames(silhouette.test) == "PAM", colnames(silhouette.test) == 
+    silhouette.width[rownames(silhouette.width) == "PAM", colnames(silhouette.width) == 
         "cor"] <- Test_valid$avg.silwidth
     Dis <- dist(data_tot[, 4:ncol(data_tot)], method = "minkowski", 
         p = 1/2)
@@ -118,7 +122,7 @@ function (data_tot, nclust)
     Test_valid <- cluster.stats(Dis, Hc$pamobject$clustering)
     Dunn.test[rownames(Dunn.test) == "PAM", colnames(Dunn.test) == 
         "mink_1/2"] <- Test_valid$dunn
-    silhouette.test[rownames(silhouette.test) == "PAM", colnames(silhouette.test) == 
+    silhouette.width[rownames(silhouette.width) == "PAM", colnames(silhouette.width) == 
         "mink_1/2"] <- Test_valid$avg.silwidth
     Dis <- dist(data_tot[, 4:ncol(data_tot)], method = "minkowski", 
         p = 1/3)
@@ -126,7 +130,7 @@ function (data_tot, nclust)
     Test_valid <- cluster.stats(Dis, Hc$pamobject$clustering)
     Dunn.test[rownames(Dunn.test) == "PAM", colnames(Dunn.test) == 
         "mink_1/3"] <- Test_valid$dunn
-    silhouette.test[rownames(silhouette.test) == "PAM", colnames(silhouette.test) == 
+    silhouette.width[rownames(silhouette.width) == "PAM", colnames(silhouette.width) == 
         "mink_1/3"] <- Test_valid$avg.silwidth
     Dis <- dist(data_tot[, 4:ncol(data_tot)], method = "minkowski", 
         p = 1)
@@ -134,7 +138,7 @@ function (data_tot, nclust)
     Test_valid <- cluster.stats(Dis, Hc$pamobject$clustering)
     Dunn.test[rownames(Dunn.test) == "PAM", colnames(Dunn.test) == 
         "manhattan"] <- Test_valid$dunn
-    silhouette.test[rownames(silhouette.test) == "PAM", colnames(silhouette.test) == 
+    silhouette.width[rownames(silhouette.width) == "PAM", colnames(silhouette.width) == 
         "manhattan"] <- Test_valid$avg.silwidth
     Dis <- dist(data_tot[, 4:ncol(data_tot)], method = "minkowski", 
         p = 2)
@@ -142,7 +146,7 @@ function (data_tot, nclust)
     Test_valid <- cluster.stats(Dis, Hc$pamobject$clustering)
     Dunn.test[rownames(Dunn.test) == "PAM", colnames(Dunn.test) == 
         "euclidean"] <- Test_valid$dunn
-    silhouette.test[rownames(silhouette.test) == "PAM", colnames(silhouette.test) == 
+    silhouette.width[rownames(silhouette.width) == "PAM", colnames(silhouette.width) == 
         "euclidean"] <- Test_valid$avg.silwidth
     homogeneite <- matrix(nrow = 7, ncol = 5)
     rownames(homogeneite) <- c("average", "single", "complete", 
@@ -290,10 +294,10 @@ function (data_tot, nclust)
 		axis(1,seq(7), labels=ar, las=2)
 		axis(2)
 		legend(cex=0.5,"bottomright",legend=ar2, col=c("red", "blue","black","green","orange"), lty = c("dotted", "solid"), lwd = 2, pch = c(1, 2,3), bg="white")
-		test<-matrix(silhouette.test,nrow=7)
-		ar<-names(silhouette.test[,1])
-		ar2<-names(silhouette.test[1,])
-		matplot( test, type = "b", lty = c("dotted", "solid"), lwd = 2, pch = c(1, 2,3), cex = 0.8, col = c("red", "blue","black","green","orange"), xlab = NULL, ylab = "Silhouette width", main = "Silhouette Test", axes=FALSE)
+		test<-matrix(silhouette.width,nrow=7)
+		ar<-names(silhouette.width[,1])
+		ar2<-names(silhouette.width[1,])
+		matplot( test, type = "b", lty = c("dotted", "solid"), lwd = 2, pch = c(1, 2,3), cex = 0.8, col = c("red", "blue","black","green","orange"), xlab = NULL, ylab = "Silhouette width", main = "Silhouette Width", axes=FALSE)
 		axis(1,seq(7), labels=ar, las=2)
 		axis(2)
 		legend(cex=0.5,"bottomright",legend=ar2, col=c("red", "blue","black","green","orange"), lty = c("dotted", "solid"), lwd = 2, pch = c(1, 2,3), bg="white")
@@ -308,17 +312,17 @@ function (data_tot, nclust)
 		axis(1,seq(7), labels=ar, las=2)
 		axis(2)
 		legend(cex=0.5,"bottomright",legend=ar2, col=c("red", "blue","black","green","orange"), lty = c("dotted", "solid"), lwd = 2, pch = c(1, 2,3), bg="white")
-		test<-matrix(silhouette.test,nrow=7)
-		ar<-names(silhouette.test[,1])
-		ar2<-names(silhouette.test[1,])
-		matplot( test, type = "b", lty = c("dotted", "solid"), lwd = 2, pch = c(1, 2,3), cex = 0.8, col = c("red", "blue","black","green","orange"), xlab = NULL, ylab = "Silhouette width", main = "Silhouette Test", axes=FALSE)
+		test<-matrix(silhouette.width,nrow=7)
+		ar<-names(silhouette.width[,1])
+		ar2<-names(silhouette.width[1,])
+		matplot( test, type = "b", lty = c("dotted", "solid"), lwd = 2, pch = c(1, 2,3), cex = 0.8, col = c("red", "blue","black","green","orange"), xlab = NULL, ylab = "Silhouette width", main = "Silhouette Width", axes=FALSE)
 		axis(1,seq(7), labels=ar, las=2)
 		axis(2)
 		legend(cex=0.5,"bottomright",legend=ar2, col=c("red", "blue","black","green","orange"), lty = c("dotted", "solid"), lwd = 2, pch = c(1, 2,3), bg="white")
 	dev.off()
 	par(mfrow=c(1,1))
-    assign("Dunn.test",Dunn.test ,envir=.GlobalEnv)
-	assign("silhouette.test", silhouette.test,envir=.GlobalEnv)
+                 assign("Dunn.test",Dunn.test ,envir=.GlobalEnv)
+	assign("silhouette.width", silhouette.width,envir=.GlobalEnv)
 	assign("matching.coef",homogeneite,envir=.GlobalEnv)	
 	print(paste("A pdf file have been generated in the path:", Mypath, cat("\n")))
 
