@@ -81,12 +81,14 @@ cluster, kohonen, class, mclust, amap, ClValid, fpc, flexmix
 }
 
 \examples{
-
+#Not run
+\dontrun{ 
 data(Agilent_quantT_MSclust)
 MS.clust(Agilent_quantT_MSclust, quant=TRUE, clV=TRUE, ncmin=10, ncmax=50,
  varRT = 0.1, disMeth="euclidean", linkMeth="ward", clustMeth="hierarchical")
-1
-21
+
+#When asked type 1 then press ENTER then type 21 and finally press ENTER
+
 ## 21 clusters have been determined as the optimal number of cluters.
 ##with the option quant=TRUE, generate profiling matrices in output
 
@@ -99,15 +101,15 @@ varRT = 0.1, disMeth="euclidean", linkMeth="ward", clustMeth="hierarchical")
 data(ASCII_MSclust)
 MS.clust(ASCII_MSclust, quant=FALSE, clV=TRUE, ncmin=10, ncmax=50, 
 varRT = 0.1, disMeth="euclidean", linkMeth=NULL, clustMeth="kmeans") 
-3 	
-26
-28
-30
+
+#When asked type 3 then press ENTER then type 26  press ENTER
+#type 28 press ENTER, type 30 and finally press ENTER
+
 ## output files are generated for three different numbers of clusters.
 ## with 3 as the number of clustering separations
 ## 26 # First number of clusters 
 ## 28 # Second number of clusters
 ## 30 # Third number of clusters
-
+}
 }
 

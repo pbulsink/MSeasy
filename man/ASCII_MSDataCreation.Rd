@@ -18,7 +18,7 @@ The folder can be used with the function MS.DataCreation that collects and assem
  }
 
 \examples{
-data(ASCII_MSDataCreation)
+pathASCII<-system.file("doc/ASCII_MSDataCreation",package="MSeasy")
 }
 
 \keyword{datasets}

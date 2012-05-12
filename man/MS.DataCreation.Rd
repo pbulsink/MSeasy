@@ -68,7 +68,7 @@ Elodie Courtois, Yann Guitton, Florence Nicole
 
 
 \examples{
-\dontrun{ 
+
 ##not run 
 ## DataType="Agilent"
 ## require xcms package
@@ -77,7 +77,7 @@ Elodie Courtois, Yann Guitton, Florence Nicole
 ## the second folder contains all CDF or mzXML files.
 ## CDF files have to be downloaded from MSeasy web site 
 ##  http://sites.google.com/site/rpackagemseasy/downloads/Agilent_example.zip
-
+\dontrun{ 
 url1<-"http://sites.google.com/site/rpackagemseasy/downloads/Agilent_example.zip"
 download.file(url=url1, destfile="AgilentCDF.zip")
 unzip(zipfile="AgilentCDF.zip", exdir=".") 

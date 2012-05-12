@@ -31,7 +31,6 @@ tcltk, SearchNIST
 
 \examples{
 #Not run
-#Not run
 \dontrun{ 
 pathexample<-system.file("doc/Output_examples",
 package="MSeasy")

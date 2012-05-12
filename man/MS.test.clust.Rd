@@ -56,6 +56,7 @@ This function produces a pdf file \emph{Graph_MStestClust.pdf} displaying graphi
 \author{Elodie Courtois, Yann Guitton, Florence Nicole}
 
 \examples{
+#Not Run
 \dontrun{
 data(Data_testclust)
 MS.test.clust(Data_testclust,10)

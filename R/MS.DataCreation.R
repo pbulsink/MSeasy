@@ -82,7 +82,7 @@ if (DataType=="Agilent")
 			an_data <- unlist(lapply(an_data, "[", length(an_data[[1]])))
 				   
 
-			an_rteres<-strsplit(an_rteres,".D")
+			an_rteres<-strsplit(an_rteres,".D", fixed=TRUE)
 			an_data<-strsplit(an_data,filepattern)
 			an_rteres <- unlist(lapply(an_rteres, "[", 1))
 			an_data <- unlist(lapply(an_data, "[", 1))
@@ -177,6 +177,22 @@ print(paste("mz:",mz[1],":",mz[length(mz)],cat("\n")))
 `errorrteres`<-function(){
        Rte<-read.table(paste(paste(path,"/", sep=""), list_rteres[m], sep=""), skip=skip_value[m]+1, blank.lines.skip=TRUE, fill=TRUE)
        Rte<-Rte[1:(dim(Rte)[1]-2),]
+# added Y GUITTON 2012-05-17
+		Rte[,9]<-as.vector(Rte[,9])
+		Rte[,10]<-as.vector(Rte[,10])
+		Rte[,11]<-as.vector(Rte[,11])
+
+		for (co in 1:nrow(Rte))
+			if (Rte[co, 11]=="")
+		{
+		Rte[co,11]<-Rte[co,10]
+		Rte[co,10]<-Rte[co,9]
+		Rte[co,9]<-Rte[co,8]
+		Rte[co,8]<-Rte[co,7]
+		Rte[co,7]<-1
+		}
+##end of addition
+
        Rte<-Rte[,c(1:5, 9, 11)]
        colnames(Rte)<-c("peak", "RT", "first_scan", "max_scan", "last_scan", "quantification1", "quantification2")
 ## Treat CDF files 3d data
@@ -802,12 +818,23 @@ if(length(cdffiles)>0){
 						quantif[1,1]<-paste(peaklist[j,grep("[Qq][Uu][Aa][Nn]",colnames(peaklist))[1]], sep="\t")
 						quantif[1,2]<-paste(peaklist[j,grep("[Qq][Uu][Aa][Nn]",colnames(peaklist))[2]], sep="\t")
 				}
+				else
+				{
+					    quantif[1,1]<-paste(peaklist[j,grep("[Qq][Uu][Aa][Nn]",colnames(peaklist))[1]], sep="\t")
+						quantif[1,2]<-paste(peaklist[j,grep("[Qq][Uu][Aa][Nn]",colnames(peaklist))[2]], sep="\t")
+				}
 				if (length(grep("[Qq][Uu][Aa][Nn]",colnames(peaklist)))<2){
 						
 						quantif[1,1]<-paste(peaklist[j,grep("[Qq][Uu][Aa][Nn]",colnames(peaklist))[1]], sep="\t")
 						#duplication of the area column for further analysis
 						quantif[1,2]<-paste(peaklist[j,grep("[Qq][Uu][Aa][Nn]",colnames(peaklist))[1]], sep="\t")
 				}	
+				else
+				{
+					    quantif[1,1]<-paste(peaklist[j,grep("[Qq][Uu][Aa][Nn]",colnames(peaklist))[1]], sep="\t")
+						quantif[1,2]<-paste(peaklist[j,grep("[Qq][Uu][Aa][Nn]",colnames(peaklist))[2]], sep="\t")
+				}
+				
 				}
 				
 				
@@ -904,9 +931,9 @@ if(length(cdffiles)>0){
 		colnames(peaks)[4]<-colnames(peaklist)[grep("[Qq][Uu][Aa][Nn]",colnames(peaklist))[2]]
 	}
 	}
-	write.table(peaks, file=file.path(Mypath,"initial_DATA.txt"), row.names=FALSE)
+	write.table(peaks, file=file.path(Mypath,"initial_DATA.txt"),quote=c(1,2), row.names=FALSE)
 	print(paste("A data file has been generated in the folder:", Mypath, cat("\n")))
-	return(peaks)
+	return(data.frame(peaks, check.names=FALSE))
 	}#end if meme longueur
 
 	if (length(peakfiles)!=0 & length(cdffiles)!=length(peakfiles)){

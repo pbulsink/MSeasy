@@ -18,8 +18,8 @@ It converts output files from \emph{MS.clust} for NIST mass spectral library sea
 \tabular{ll}{
 Package: \tab MSeasy\cr
 Type: \tab Package\cr
-Version: \tab 5.3 \cr
-Date: \tab 2012-04-12\cr
+Version: \tab 5.3.1 \cr
+Date: \tab 2012-05-12\cr
 License: \tab GPL-2\cr
 LazyLoad: \tab yes\cr
 }

@@ -1,0 +1,19 @@
+Change Logs MSeasy 5.3.1
+
+2012-05-17 Yann Guitton
+MS.DataCreation
+change of the rteres error function 
+
+2012-05-12 Yann Guitton
+MS.DataCreation
+change an_rteres<-strsplit(an_rteres,".D", fixed=TRUE) to avoid bugs with GC-MS file names
+
+2012-08-14 Yann Guitton
+MS.clust help file
+change of the examples, now they aren't tested by R CMD Check, this was motivated by the fact that the user is ask to interact (i.e for the choosen number of clusters)
+
+MS.DataCreation code was modified as to create a data.frame for DataType="CDF" (i.e return(peak) change to return(data.frame(peak, check.names=FALSE))
+
+Agilent_MSDataCreation, ASCII_MSDataCreation and ASCII_TransASCII help files
+exemple command line modified due to error with data()
+

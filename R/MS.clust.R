@@ -14,7 +14,7 @@ Date<-paste(st[1], st[2], st[3], Hour, sep="_")
 Mypath<-paste("output_MSclust", "_", "result", Date, sep="")
 dir.create(Mypath)
 library(cluster)
-
+data_tot<-as.data.frame(data_tot)
 if (quant==TRUE) {Beg<-5}
 if (quant==FALSE) {Beg<-3}
 
@@ -237,7 +237,7 @@ colnames(mat_dat2)<-mol
        for (i in 1:length(In))
        {
         tempo<-subset(dat, dat[,2]==In[i])
-        tempMol<-as.factor(as.vector(tempo[,1]))
+		tempMol<-as.factor(as.vector(tempo[,1]))
 
         vect<-is.na(match(mol, tempMol))# les pics présents dans l'échantillon
                 if (quant ==FALSE)
@@ -348,7 +348,11 @@ assign("ms8_bug",ms_8,envir=parent.frame())
 ## write the outfiles in Mypath
 
 data_final_all<-cbind(data_tot_temp_new[,1:7], ms_8, data_tot_temp_new[8:ncol(data_tot_temp_new)])
-
+if (quant ==TRUE)
+{
+	colnames(data_final_all)[6]<-"quantification1"
+	colnames(data_final_all)[7]<-"quantification2"
+}
 write.table(res, file=file.path(Mypath,paste("output_cluster", answer[NC], ".txt", sep="")), row.names=FALSE)
 write.table(data_final_all, file=file.path(Mypath,paste("output_peak", answer[NC], ".txt", sep="")), row.names=FALSE)
 
@@ -362,11 +366,11 @@ if (quant ==TRUE)
 {
 mat_dat<-cbind(rownames(mat_dat), mat_dat)
 colnames(mat_dat)[1]<-"analysis"
-write.table(mat_dat, file=file.path(Mypath,paste("output_profilingmatrix_quantification1", answer[NC], ".txt", sep="")), row.names=FALSE)
+write.table(mat_dat, file=file.path(Mypath,paste("output_profilingmatrix_quantification1_", answer[NC], ".txt", sep="")), row.names=FALSE)
 
 mat_dat2<-cbind(rownames(mat_dat2), mat_dat2)
 colnames(mat_dat2)[1]<-"analysis"
-write.table(mat_dat2, file=file.path(Mypath,paste("output_profilingmatrix_quantification2", answer[NC], ".txt", sep="")), row.names=FALSE)
+write.table(mat_dat2, file=file.path(Mypath,paste("output_profilingmatrix_quantification2_", answer[NC], ".txt", sep="")), row.names=FALSE)
 
 }
 

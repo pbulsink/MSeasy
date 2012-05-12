@@ -19,7 +19,7 @@ The folder can be used with the function trans.ASCII to transform the raw ascii 
  }
 
 \examples{
-data(ASCII_TransASCII)
+pathASCII<-system.file("doc/ASCII_TransASCII",package="MSeasy")
 }
 
 \keyword{datasets}
