@@ -8,7 +8,8 @@
 This function constructs a global matrix called \emph{initial_DATA.txt} by collecting and assembling the information from chromatograms and mass spectra from several GC-MS analyses. It performs basic peak detection if the input file is in ASCII format. For other input files, peak retention times (or retention indices) are retrieved from the chromatograms (peaklist.txt or rteres.txt files) and associated to their respective mass spectrum (AIA/ANDI NetCDF, mzXML, mzData and mzML files). Each row of the output matrix represents one peak in one analysis and reports the sample name in first column, the peak retention time (or retention index) in second column and the mass spectrum of the peak in the following columns. If the input file is in Agilent format, two quantification measures of peak size can be extracted directly from rteres.txt: corrected area is then inserted in column 3 and percent of the total corrected area is placed in column 4 of \emph{initial_DATA.txt}. If the input file is CDF, one or two quantification measures of peak size can be extracted from column 6 (quantification1) and 7 (quantification2) of peaklist.txt; values are then reported respectively in column 3 and 4 of \emph{initial_DATA.txt}. Except for ASCII, xcms package is needed. Copy paste the following code to download xcms: source("http://bioconductor.org/biocLite.R");biocLite("xcms")}
 
 \usage{
-MS.DataCreation(DataType="CDF", path="", pathCDF="", mz, N_filt=3, apex= FALSE, quant = FALSE)
+MS.DataCreation(DataType="CDF", path="", pathCDF="", mz, N_filt=3, apex= FALSE,
+ quant = FALSE)
 }
 
 \arguments{
@@ -41,7 +42,9 @@ This option will allow to generate one or two profiling matrices with quantifica
 \details{
 After a GC-MS analysis, different types of files are produced from the chromatograph and the mass spectrometer . Each instrument vendor provide specific proprietary data formats that should be converted to common raw data format such as ANDI NetCDF or mzXML. Most commonly used file formats for mass spectral data, i.e. NetCDF, mzXML and ASCII, are acceptable in MS.DataCreation. Specific proprietary format from Agilent Technologies can also be used directly. Below the detailed structure of the three types of input formats:
 
-	 (i) DataType=\emph{CDF}. Each  GC-MS analysis has its own folder, which contains a mass spectrum in AIA/ANDI NetCDF, mzXML, mzData or mzML format, and a peak list stored in a file named peaklist.txt. Peaklist.txt should have column headings similar to \emph{peak/RT/firstscan/maxscan/lastscan/quantification1/quantification2}. The first column contain the peak number, the retention time in minute or second is in the second column, the first scan of the peak is in the third column, the scan at the apex (maxscan) is in column 4, the last scan of the peak is in column 5, and optionally a quantitative measure of peak size (quantifaction1) is in column 6, and another quantitative measures of peak size (quantification2) is in column 7 (only \emph{maxscan} used if \code{apex=TRUE} in \code{MS.clust}). The sample name reported in the output matrix is extracted from the name of the AIA/ANDI files. Thus, all AIA/ANDI files should have different names. All analysis folders should be grouped in one folder.
+	 (i) DataType=\emph{CDF}. Each  GC-MS analysis has its own folder, which contains a mass spectrum in AIA/ANDI NetCDF, mzXML, mzData or mzML format, and a peak list stored in a file named peaklist.txt. Peaklist.txt should have column headings similar to
+	
+	\emph{peak/RT/firstscan/maxscan/lastscan/quantification1/quantification2}. The first column contain the peak number, the retention time in minute or second is in the second column, the first scan of the peak is in the third column, the scan at the apex (maxscan) is in column 4, the last scan of the peak is in column 5, and optionally a quantitative measure of peak size (quantifaction1) is in column 6, and another quantitative measures of peak size (quantification2) is in column 7 (only \emph{maxscan} used if \code{apex=TRUE} in \code{MS.clust}). The sample name reported in the output matrix is extracted from the name of the AIA/ANDI files. Thus, all AIA/ANDI files should have different names. All analysis folders should be grouped in one folder.
 The function first checks for the presence of AIA/ANDI and peaklist.txt files, controls if the range of mz is consistent and checks the structure of the peaklist.txt files. In a second time, the function collects the peak's retention time in peaklist.txt and looks for corresponding mass spectra in CDF files. Depending on the Apex option, the mean mass spectrum per each peak is calculated or the mass spectrum at the apex is extracted. The intensity, in counts, of each mass fragment is transformed to a relative percentage of the highest mass fragment per spectrum.  If quant = TRUE, one or two quantification columns, quantification1 and quantification2, are extracted for each peak from peaklist.txt and placed respectively in columns 3 and 4 of the output initial_DATA matrix.
 
 
@@ -52,11 +55,14 @@ The function first checks if all sample folders (.D) within the folder \emph{pat
 	(iii) DataType=\emph{ASCII}.If your GC-MS raw data have been converted into the international ASCII format, all files (one per GC-MS analysis) should be grouped in one folder and first pass through the trans.ASCII function. The trans.ASCII function generates a folder output_date_time with translated files compatible with MS.DataCreation. This output_date_time file may correspond to \emph{path}. First, a smoothing of chromatogram depending on the option N_filt is performed (see the documentation of the function \emph{filter}, method=\emph{convolution}). Afterwards, peak are detected by the succession of 3 points with increasing intensity directly followed by three points of decreasing intensity (all points should have an intensity higher than 10 kilocounts). The first and last peaks of the chromatogram are removed if incomplete. In a third time, depending on the Apex option, the function calculates the mean mass spectrum per each peak or extracts the mass spectrum at the apex and the intensity (in counts) of each mass fragment is transformed to a relative percentage of the highest mass fragment per spectrum.    
 			 
 		 
-	The output file called initial_DATA.txt is saved in folder \emph{Output_MSDataCreation_resultdate_time}.  
-	It contains the relative mass spectrum of each peak of all samples. The first column contains sample name (the name of the folder containing the GC-MS analysis), the second column is the peak retention time (or retention index) and the following columns correspond to the relative mass spectrum of the peak (within the range of the mass spectrum). If quant = TRUE, the first column contains sample name (the name of the folder containing the GC-MS analysis), the second column is the peak retention time (or retention index), the third column contains quantification 1 (corrected area for Agilent), the fourth column contains quantification 2 (percent of the total corrected area for Agilent) and the following columns correspond to the relative mass spectrum of the peak (within the range of the mass spectrum). 
+	The output file called initial_DATA.txt is saved in a folder called 
+	
+	\emph{Output_MSDataCreation_resultdate_time}. It contains the relative mass spectrum of each peak of all samples. The first column contains sample name (the name of the folder containing the GC-MS analysis), the second column is the peak retention time (or retention index) and the following columns correspond to the relative mass spectrum of the peak (within the range of the mass spectrum). If quant = TRUE, the first column contains sample name (the name of the folder containing the GC-MS analysis), the second column is the peak retention time (or retention index), the third column contains quantification 1 (corrected area for Agilent), the fourth column contains quantification 2 (percent of the total corrected area for Agilent) and the following columns correspond to the relative mass spectrum of the peak (within the range of the mass spectrum). 
 }
 \value{
-MS.DataCreation returns a data matrix called initial_DATA.txt, saved in folder \emph{Output_MSDataCreation_resultdate_time}. It contains one row per peak and per individual with sample name, retention time (or retention index) and relative mass spectrum. If quant =TRUE, two supplementary columns quantification1 and quantification2 are added after the column retention time. 
+MS.DataCreation returns a data matrix called initial_DATA.txt, saved in a folder called 
+
+ \emph{Output_MSDataCreation_resultdate_time}. It contains one row per peak and per individual with sample name, retention time (or retention index) and relative mass spectrum. If quant =TRUE, two supplementary columns quantification1 and quantification2 are added after the column retention time. 
 During the analysis, a temporary file called save_list_temp.rda is automatically generated in folder \emph{Output_MSDataCreation_resultdate_time}. It allows recovering temporary informations if the function stopped before ending.
 
 }
@@ -73,7 +79,8 @@ Elodie Courtois, Yann Guitton, Florence Nicole
 ## DataType="Agilent"
 ## require xcms package
 ## For Agilent Technologies GC-MS files 
-## two folders are required:one folder with all .D analysis folders, each containing a rteres.txt file
+## two folders are required:one folder with all .D analysis folders,
+## each containing a rteres.txt file
 ## the second folder contains all CDF or mzXML files.
 ## CDF files have to be downloaded from MSeasy web site 
 ##  http://sites.google.com/site/rpackagemseasy/downloads/Agilent_example.zip
@@ -86,11 +93,13 @@ unlink("AgilentCDF.zip")  ##delete the zip files
 
 #with pathCDF
 library(xcms)
-MS.DataCreation(path=file.path(getwd(),"Agilent_rteres"), pathCDF=file.path(getwd(),"Agilent_CDF"), DataType="Agilent", mz=30:250,apex=FALSE, quant=FALSE) 
+MS.DataCreation(path=file.path(getwd(),"Agilent_rteres"), pathCDF=file.path(getwd(),
+"Agilent_CDF"), DataType="Agilent", mz=30:250,apex=FALSE, quant=FALSE) 
 
 # without pathCDF
 library(xcms)
-MS.DataCreation(path=file.path(getwd(),"Agilent_rteres"), DataType="Agilent", mz=30:250,apex=FALSE, quant=FALSE) 
+MS.DataCreation(path=file.path(getwd(),"Agilent_rteres"), DataType="Agilent", 
+mz=30:250,apex=FALSE, quant=FALSE) 
 
 ## Browse for the path to the Agilent_CDF folder
 ## downloaded and unzipped from MSeasy website
@@ -113,7 +122,8 @@ unlink("ExampleCDF.zip")  ##delete the zip files
 
 #with pathCDF
 library(xcms)
-MS.DataCreation(pathCDF=file.path(getwd(),"CDF_peaklist"), DataType="CDF", mz="all",apex=FALSE, quant=FALSE) 
+MS.DataCreation(pathCDF=file.path(getwd(),"CDF_peaklist"), 
+DataType="CDF", mz="all",apex=FALSE, quant=FALSE) 
 
 # without pathCDF
 library(xcms)

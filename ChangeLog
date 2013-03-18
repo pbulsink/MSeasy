@@ -1,3 +1,13 @@
+Change Logs MSeasy 5.3.2
+
+2013-03-19 Yann GUITTON
+remove all .GlobalEnv assignement
+try to use best practice for data()
+
+2013-03-18 Yann GUITTON
+Add Maintainer Name in Description file and put xcms and mzR as Depends, 
+MS.DataCreation help file is now more explicite about mzML format reading capabilities of MSeasy
+
 Change Logs MSeasy 5.3.1
 
 2012-05-17 Yann Guitton
@@ -16,4 +26,7 @@ MS.DataCreation code was modified as to create a data.frame for DataType="CDF" (
 
 Agilent_MSDataCreation, ASCII_MSDataCreation and ASCII_TransASCII help files
 exemple command line modified due to error with data()
+
+2012-08-17 Yann GUITTON
+Add CITATION file
 

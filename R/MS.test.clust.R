@@ -1,6 +1,7 @@
 MS.test.clust <-
 function (data_tot, nclust) 
 {
+attach(what=NULL, name="e1")
 if(missing(data_tot)){
 data_tot<-tk_choose.files(default=file.path(getwd(),"*.txt"),caption="Please, select a file for MS.test.clust", multi=FALSE, filters=matrix(c("your file","*.txt"),ncol=2))
 data_tot<-read.table(data_tot, header=TRUE, check.names=FALSE)
@@ -321,9 +322,9 @@ data_tot<-read.table(data_tot, header=TRUE, check.names=FALSE)
 		legend(cex=0.5,"bottomright",legend=ar2, col=c("red", "blue","black","green","orange"), lty = c("dotted", "solid"), lwd = 2, pch = c(1, 2,3), bg="white")
 	dev.off()
 	par(mfrow=c(1,1))
-                 assign("Dunn.test",Dunn.test ,envir=.GlobalEnv)
-	assign("silhouette.width", silhouette.width,envir=.GlobalEnv)
-	assign("matching.coef",homogeneite,envir=.GlobalEnv)	
+    assign("Dunn.test",Dunn.test ,envir=as.environment("e1"))
+	assign("silhouette.width", silhouette.width,envir=as.environment("e1"))
+	assign("matching.coef",homogeneite,envir=as.environment("e1"))	
 	print(paste("A pdf file have been generated in the path:", Mypath, cat("\n")))
 
 }

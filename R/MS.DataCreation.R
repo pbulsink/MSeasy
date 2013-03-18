@@ -1,6 +1,7 @@
 MS.DataCreation <-
 function(DataType="CDF", path="", pathCDF="", mz, N_filt=3, apex=FALSE, quant=FALSE)
 {
+attach(what=NULL, name="e1")
 ### MSeasy v 1.3 March 2011 with improved errorhandling and quant option
 if (DataType=="Agilent"||DataType=="ASCII")
 {
@@ -164,7 +165,7 @@ cdf_error<-function(){
 					print(paste("mz maximum value was set to ", min(mz_max), cat("\n")))
 					pbmzmax<-0
 			}
-	assign("mz", mz, envir = .GlobalEnv)
+	assign("mz", mz, envir=as.environment("e1"))
 	return(mz)
 }
 
@@ -223,14 +224,14 @@ print(paste("mz:",mz[1],":",mz[length(mz)],cat("\n")))
 
 }#end test error
 
-for (m in 1:length(an)){result<-try(errorrteres(), silent=TRUE); if(class(result) == "try-error"){pblist[pb]<-list_rteres[m]; pb=pb+1; assign("pblist",pblist ,envir=.GlobalEnv);next;}}
-
+for (m in 1:length(an)){result<-try(errorrteres(), silent=TRUE); if(class(result) == "try-error"){pblist[pb]<-list_rteres[m]; pb=pb+1; assign("pblist",pblist ,envir=as.environment("e1"));next;}}
+#for (m in 1:length(an)){result<-try(errorrteres(), silent=TRUE); if(class(result) == "try-error"){pblist[pb]<-list_rteres[m]; pb=pb+1; return(pblist);next;}}
 pblistl<-length(pblist)
 
 
 if (pblistl!=0){
 
-       eval(cat("A problem occured in the rteres.txt files listed below \n Check the pkty column for missing value for the first peak \n"), envir=.GlobalEnv); pblist<-data.frame(pblist); eval(print(pblist), envir=.GlobalEnv);
+       eval(cat("A problem occured in the rteres.txt files listed below \n Check the pkty column for missing value for the first peak \n"), envir=as.environment("e1")); pblist<-data.frame(pblist); eval(print(pblist), envir=as.environment("e1"));
        stop
        }
 else{
@@ -758,7 +759,7 @@ if(length(cdffiles)>0){
 						pbmzmax<-0
 				}
 		
-		assign("mz", mz, envir = .GlobalEnv)
+		assign("mz", mz, envir=as.environment("e1"))
 		return(mz)
 	}
 
